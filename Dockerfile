@@ -45,15 +45,15 @@ RUN cd /usr/local/spark-3.3.1-bin-hadoop3/jars && \
         echo "PostgreSQL JDBC driver already exists"; \
     fi
 
+# python 패키지 설치
+RUN pip install --no-cache-dir spylon-kernel py4j==0.10.9.5 && \
+    python -m spylon_kernel install
+
 # jars 디렉토리의 소유권을 jovyan에게 변경
 RUN chown -R jovyan:jovyan /usr/local/spark-3.3.1-bin-hadoop3/jars
 
 # Python 패키지 설치를 위해 jovyan으로 다시 전환
 USER jovyan
-
-# python 패키지 설치
-RUN pip install --no-cache-dir spylon-kernel py4j==0.10.9.5 && \
-    python -m spylon_kernel install
 
 # Jupyter Lab 활성화
 ENV JUPYTER_ENABLE_LAB=yes

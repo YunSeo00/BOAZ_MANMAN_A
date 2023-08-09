@@ -17,6 +17,8 @@ services:
       DATABASE_DRIVER: org.postgresql.Driver
       DATABASE_USER: boaz
       DATABASE_PASSWORD: 12341234
+    networks:
+      - spark-network
 
   postgres:
     image: postgres:13
@@ -30,5 +32,11 @@ services:
       interval: 5s
       retries: 5
     restart: always
+    networks:
+      - spark-network
+
+networks:
+  spark-network:
+    driver: bridge
     
   
