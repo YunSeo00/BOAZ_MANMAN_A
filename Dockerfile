@@ -35,27 +35,25 @@ RUN wget https://downloads.lightbend.com/scala/2.12.14/scala-2.12.14.deb && \
     mv sbt /usr/local && \
     echo "export PATH=/usr/local/sbt/bin:$PATH" >> /etc/bash.bashrc
 
-
-
-# JDBC 드라이버 다운로드
+# JDBC 설치
 RUN cd /usr/local/spark-3.3.1-bin-hadoop3/jars && \
-    if [ ! -f redshift-jdbc42-2.1.0.14.jar ]; then \
-        if ! wget -P /usr/local/spark-3.3.1-bin-hadoop3/jars https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar; then \
-            echo "Failed to download Redshift JDBC driver"; \
+    if [ ! -f postgresql-42.6.0.jar ]; then \
+        if ! wget -P /usr/local/spark-3.3.1-bin-hadoop3/jars https://jdbc.postgresql.org/download/postgresql-42.6.0.jar; then \
+         echo "Failed to download PostgreSQL JDBC driver"; \
         fi \
     else \
-        echo "Redshift JDBC driver already exists"; \
+        echo "PostgreSQL JDBC driver already exists"; \
     fi
 
 # jars 디렉토리의 소유권을 jovyan에게 변경
 RUN chown -R jovyan:jovyan /usr/local/spark-3.3.1-bin-hadoop3/jars
 
-# Python 패키지 설치
-RUN pip install --no-cache-dir spylon-kernel py4j==0.10.9.5 && \
-    python -m spylon_kernel install
-
 # Python 패키지 설치를 위해 jovyan으로 다시 전환
 USER jovyan
+
+# python 패키지 설치
+RUN pip install --no-cache-dir spylon-kernel py4j==0.10.9.5 && \
+    python -m spylon_kernel install
 
 # Jupyter Lab 활성화
 ENV JUPYTER_ENABLE_LAB=yes

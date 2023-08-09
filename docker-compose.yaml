@@ -10,3 +10,25 @@ services:
     restart: always
     volumes:
       - .:/home/jovyan
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_DRIVER: org.postgresql.Driver
+      DATABASE_USER: boaz
+      DATABASE_PASSWORD: 12341234
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: boaz
+      POSTGRES_PASSWORD: boaz
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "boaz"]
+      interval: 5s
+      retries: 5
+    restart: always
+    
+  
